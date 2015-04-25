@@ -22,17 +22,17 @@ shinyServer(function(input, output){
             g <- ggplot(data.frame(axis = c(mu0 - (sigma / 2), mua + (sigma / 2))),
                         aes(x = axis))
             
-            g <- g + stat_function(fun = dnorm, geom = "line", 
+            g <- g + stat_function(fun = dnorm, geom = "line", linetype = "dotdash",
                                    args = list(mean = mu0, 
                                                sd = sigma / sqrt(n)),
                                    size = 2, aes(color = "a")) +
                 
-                stat_function(fun = dnorm, geom = "line",
+                stat_function(fun = dnorm, geom = "line", linetype = "dotdash",
                               args = list(mean = mua, 
                                           sd = sigma / sqrt(n)),
                               size = 2, aes(color = "b")) +
                 
-                geom_vline(xintercept = xitc, size = 2) +
+                geom_vline(xintercept = xitc, size = 1.5, linetype = "dashed") +
                 
                 ggtitle("Power to detect difference across groups") +
                 
@@ -49,12 +49,12 @@ shinyServer(function(input, output){
                 g <- ggplot(data.frame(axis = c(mua - (sigma / 2), mu0 + (sigma /2))),
                             aes(x = axis))
                 
-                g <- g + stat_function(fun = dnorm, geom = "line", 
+                g <- g + stat_function(fun = dnorm, geom = "line", linetype = "dotdash",
                                        args = list(mean = mu0, 
                                                    sd = sigma / sqrt(n)),
                                        size = 2, aes(color = "a")) +
                     
-                    stat_function(fun = dnorm, geom = "line",
+                    stat_function(fun = dnorm, geom = "line", linetype = "dotdash",
                                   args = list(mean = mua, 
                                               sd = sigma / sqrt(n)),
                                   size = 2, aes(color = "b")) +
@@ -71,38 +71,23 @@ shinyServer(function(input, output){
             }
         }
         
-        print(g + theme(axis.title.y = element_blank()) +
-                  xlab("Means")
-              )
-    })
-    
-    output$text <- renderText({
-        
-        n <- input$n
-        mua <- input$mua
-        mu0 <- input$mu0
-        sigma <- input$sigma
-        alpha <- input$alpha
-        
         test <- power.t.test(n, delta = abs(mua - mu0), sd = sigma,
                              type = "one.sample", alt = "one.sided")$power
         
         test <- round(test, 2)
         
-        
-        print(paste("Power to detect an effect: ", test, sep = ""))
-    })
-    
-    output$text1 <- renderText({
-        
-        n <- input$n
-        mua <- input$mua
-        mu0 <- input$mu0
-        sigma <- input$sigma
-        alpha <- input$alpha
+        test <- paste("Power to detect an effect: ", test, sep = "")
         
         es <- round(abs(mua - mu0) / sigma, 2)
-    
-        print(paste("Approx. effect-size: ", es))
+        
+        es <- paste("Approx. effect-size: ", es)
+        
+        print(g + theme(axis.title.y = element_blank(), 
+                        panel.background = element_blank()) +
+                  xlab("Means") + 
+                  annotate("text", x = mu0 - 1, y = .25, label = test) +
+                  annotate("text", x = mu0 - 1, y = .20, label = es) +
+                  annotate("text", x = xitc - .5, y = 0, label = "Alpha")
+              )
     })
 })

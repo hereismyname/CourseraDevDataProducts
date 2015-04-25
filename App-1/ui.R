@@ -10,7 +10,7 @@ shinyUI(fluidPage(
             numericInput("n", label = "Number of observations", value = 30),
             numericInput("mua", label = "Experimental Condition", value = 32),
             numericInput("mu0", label = "Control Condition", value = 30),
-            numericInput("sigma", label = "Sigma (Standard Error)", value = 8),
+            numericInput("sigma", label = "Standard Deviation", value = 8),
             sliderInput("alpha", label = "Alpha Level",
                          min = 0.000001, max = .1, value = .05)
             ),
@@ -39,13 +39,11 @@ shinyUI(fluidPage(
               the results of the power analysis, along with the effect size expected
               from the differences between conditions. The graph then visualizes the
               distributions of both the experimental and control conditions based off
-              the values you display. Hopefully, this graphical display will help you
+              the values you select. Hopefully, this graphical display will help you
               more intuitively understand how power corresponds to sample size, and 
               measures of spread."),
             
-            plotOutput("plotfun"),
-            textOutput("text"),
-            textOutput("text1")
+            plotOutput("plotfun")
         )
     )
 ))
