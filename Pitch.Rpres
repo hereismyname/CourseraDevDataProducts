@@ -41,7 +41,7 @@ Code Crafted
 width: 2000
 height: 2000
 ```{r}
-xitc <- mu0 + qnorm(1 - alpha) * (sigma / sqrt(n)) ## Line set by alpha
+xalpha <- mu0 + qnorm(1 - alpha) * (sigma / sqrt(n)) ## Line set by alpha
             
 g <- ggplot(data.frame(axis = c(mu0 - (sigma / 2), mua + (sigma / 2))), aes(x = axis))
             
@@ -50,7 +50,7 @@ g <- g + stat_function(fun = dnorm, geom = "line", args = list(mean = mu0, sd = 
     stat_function(fun = dnorm, geom = "line", args = list(mean = mua,
     sd = sigma / sqrt(n)), size = 2, aes(color = "b")) + ## Experimental Group
     
-    geom_vline(xintercept = xitc, size = 2) ## Implment alpha line
+    geom_vline(xintercept = xalpha, size = 2) ## Implment alpha line
 ```
 
 Plot Example
