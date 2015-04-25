@@ -11,25 +11,93 @@ shinyServer(function(input, output){
         sigma <- input$sigma
         alpha <- input$alpha
         
-        xitc <- mu0 + qnorm(1 - alpha) * (sigma / sqrt(n))
-        
-        g <- ggplot(data.frame(axis = c(mu0 - (sigma / 2), mua + (sigma / 2))),
-                    aes(x = axis))
-        
-        g <- g + stat_function(fun = dnorm, geom = "line", 
-                               args = list(mean = mu0, 
-                                           sd = sigma / sqrt(n)),
-                               size = 2, col = "red") +
+        if (mua >= mu0) {
+            xitc <- mu0 + qnorm(1 - alpha) * (sigma / sqrt(n))
             
-            stat_function(fun = dnorm, geom = "line",
-                               args = list(mean = mua, 
-                                           sd = sigma / sqrt(n)),
-                               size = 2, col = "blue") +
+            g <- ggplot(data.frame(axis = c(mu0 - (sigma / 2), mua + (sigma / 2))),
+                        aes(x = axis))
             
-            geom_vline(xintercept = xitc, size = 2) +
+            g <- g + stat_function(fun = dnorm, geom = "line", 
+                                   args = list(mean = mu0, 
+                                               sd = sigma / sqrt(n)),
+                                   size = 2, aes(color = "a")) +
+                
+                stat_function(fun = dnorm, geom = "line",
+                              args = list(mean = mua, 
+                                          sd = sigma / sqrt(n)),
+                              size = 2, aes(color = "b")) +
+                
+                geom_vline(xintercept = xitc, size = 2) +
+                
+                ggtitle("Power to detect difference across groups") +
+                
+                scale_colour_manual("Legend", 
+                                    values = c("a" = "red",
+                                               "b" = "blue"),
+                                    labels = c("Control", "Experiment"))
             
-            ggtitle("Power to detect difference across groups")
+        } else {
+            
+            if (mua < mu0) {
+                xitc <- mu0 - qnorm(1 - alpha) * (sigma / sqrt(n))
+                
+                g <- ggplot(data.frame(axis = c(mua - (sigma / 2), mu0 + (sigma /2))),
+                            aes(x = axis))
+                
+                g <- g + stat_function(fun = dnorm, geom = "line", 
+                                       args = list(mean = mu0, 
+                                                   sd = sigma / sqrt(n)),
+                                       size = 2, aes(color = "a")) +
+                    
+                    stat_function(fun = dnorm, geom = "line",
+                                  args = list(mean = mua, 
+                                              sd = sigma / sqrt(n)),
+                                  size = 2, aes(color = "b")) +
+                    
+                    geom_vline(xintercept = xitc, size = 2) +
+                    
+                    ggtitle("Power to detect difference across groups") +
+                    
+                    scale_colour_manual("Legend", 
+                                        values = c("a" = "red",
+                                                   "b" = "blue"),
+                                        labels = c("Control", "Experiment"))
+                
+            }
+        }
         
-        print(g)
+        print(g + theme(axis.title.y = element_blank()) +
+                  xlab("Means")
+              )
+    })
+    
+    output$text <- renderText({
+        
+        n <- input$n
+        mua <- input$mua
+        mu0 <- input$mu0
+        sigma <- input$sigma
+        alpha <- input$alpha
+        
+        test <- power.t.test(n, delta = abs(mua - mu0), sd = sigma,
+                             type = "one.sample", alt = "one.sided")$power
+        
+        test <- round(test, 2)
+        
+        
+        print(paste("Observed power: ", test, sep = ""))
+    })
+    
+    output$text1 <- renderText({
+        
+        n <- input$n
+        mua <- input$mua
+        mu0 <- input$mu0
+        sigma <- input$sigma
+        alpha <- input$alpha
+        
+        es <- round(abs(mua - mu0) / sigma, 2)
+    
+        print(paste("Observed effect-size: ", es))
     })
 })

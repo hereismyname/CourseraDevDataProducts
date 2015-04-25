@@ -7,7 +7,7 @@ shinyUI(fluidPage(
     
     sidebarLayout(
         sidebarPanel(
-            numericInput("n", label = "Number of subjects", value = 30),
+            numericInput("n", label = "Number of observations", value = 30),
             numericInput("mua", label = "Experimental Condition", value = 32),
             numericInput("mu0", label = "Control Condition", value = 30),
             numericInput("sigma", label = "Sigma (Standard Error)", value = 8),
@@ -16,7 +16,9 @@ shinyUI(fluidPage(
             ),
         
         mainPanel(
-            plotOutput("plotfun")
+            plotOutput("plotfun"),
+            textOutput("text"),
+            textOutput("text1")
         )
     )
 ))
