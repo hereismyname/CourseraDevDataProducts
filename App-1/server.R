@@ -11,6 +11,11 @@ shinyServer(function(input, output){
         sigma <- input$sigma
         alpha <- input$alpha
         
+        numtest <- c(n, mua, mu0, sigma, alpha)
+        
+        if (is.numeric(numtest) == FALSE) stop("It appears that one of your values is not a number! Please double-check to make sure your inputs are correct!")
+        if (anyNA(numtest) == TRUE) stop("It appears you're missing a parameter!")                                       
+        
         if (mua >= mu0) {
             xitc <- mu0 + qnorm(1 - alpha) * (sigma / sqrt(n))
             
@@ -85,7 +90,7 @@ shinyServer(function(input, output){
         test <- round(test, 2)
         
         
-        print(paste("Observed power: ", test, sep = ""))
+        print(paste("Power to detect an effect: ", test, sep = ""))
     })
     
     output$text1 <- renderText({
@@ -98,6 +103,6 @@ shinyServer(function(input, output){
         
         es <- round(abs(mua - mu0) / sigma, 2)
     
-        print(paste("Observed effect-size: ", es))
+        print(paste("Approx. effect-size: ", es))
     })
 })
