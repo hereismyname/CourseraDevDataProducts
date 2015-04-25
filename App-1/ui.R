@@ -3,15 +3,16 @@ library(ggplot2)
 
 shinyUI(fluidPage(
     
-    titlePanel("My app!"),
+    titlePanel("Experimental Power Calculator"),
     
     sidebarLayout(
         sidebarPanel(
             numericInput("n", label = "Number of subjects", value = 30),
-            numericInput("muA", label = "Experimental Group", value = 32),
-            numericInput("mu0", label = "Control group", value = 30),
-            numericInput("sigma", label = "Sigma", value = 8),
-            numericInput("alpha", label = "Alpha Level", value = .05)
+            numericInput("mua", label = "Experimental Condition", value = 32),
+            numericInput("mu0", label = "Control Condition", value = 30),
+            numericInput("sigma", label = "Sigma (Standard Error)", value = 8),
+            sliderInput("alpha", label = "Alpha Level",
+                         min = 0.000001, max = .1, value = .05)
             ),
         
         mainPanel(
